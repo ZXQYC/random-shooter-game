@@ -7,7 +7,7 @@ Moderator: Nick Helms (nhelms2)
 This is a random shooter game
 
 #### Purpose
-The purpose of this project is to create a game where a player can control a 
+The purpose of this project is to create a game where a player can control an entity and attack an enemy. Players should be able to compare how fast they win (if they do) with other players.
 
 #### Motivation
 There are plenty of games that involve the player controlling an entity that shoots bullets at an enemy until one or the other dies, but I’d like to create my own with my own features.
