@@ -2,6 +2,7 @@
 # A Random Shooter Game
 
 Name: Hongyi Chen (hongyic3)
+
 Moderator: Nick Helms (nhelms2)
 
 This is a random shooter game
