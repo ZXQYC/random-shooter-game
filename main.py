@@ -2,6 +2,7 @@ import math
 import random
 import sys
 import pygame
+import numpy as np
 
 from health import *
 
@@ -71,11 +72,20 @@ class Collider(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
         self.damage = damage
+        self.vec = np.array(self.rect.center)
 
     def get_hit(self, other):
         self.health.take_damage(other.damage)
         if self.health.dead():
             self.kill()
+
+    def move_to(self, vec):
+        cx, cy = self.rect.center
+        self.rect.move_ip(int(vec[0]-cx), int(vec[1]-cy))
+        self.vec = vec
+
+    def move_by(self, vec):
+        self.move_to(vec+self.vec)
 
     @staticmethod
     def collide(c1, c2):
@@ -103,13 +113,11 @@ class Player(Collider):
         )
 
     def update(self):
-        nx, ny = pygame.mouse.get_pos()
-        cx, cy = self.rect.center
-        dx, dy = nx-cx, ny-cy
-        dist = (dx*dx+dy*dy)**.5
+        vec_move = np.array(pygame.mouse.get_pos())-self.vec
+        dist = np.linalg.norm(vec_move)
         if dist > self.MOVE_SPEED:
-            dx, dy = dx*self.MOVE_SPEED/dist, dy*self.MOVE_SPEED/dist
-        self.rect.move_ip(dx, dy)
+            vec_move = vec_move * self.MOVE_SPEED / dist
+        self.move_by(vec_move)
 
 
 def main():
