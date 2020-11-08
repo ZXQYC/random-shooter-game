@@ -4,7 +4,7 @@ import sys
 
 import pygame
 
-from screen import PlayScreen
+from play_screen import PlayScreen
 from utils import WINDOW_SIZE
 
 
