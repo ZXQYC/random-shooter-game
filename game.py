@@ -5,7 +5,7 @@ import pygame
 import numpy as np
 
 from health import *
-from collider import *
+from sprite_library import *
 from player import *
 from screen import *
 from utils import *
@@ -21,7 +21,6 @@ class Game:
         self.screen = None
 
     def run(self):
-        pygame.init()
         clock = pygame.time.Clock()
         self.screen = pygame.display.set_mode(Game.SIZE)
         while True:
@@ -32,13 +31,10 @@ class Game:
             self.scene.update(events)
             clock.tick(self.FPS)
 
-    def set_screen(self, new_screen):
-        self.scene = new_screen(self)
-
-
-def main():
-    Game().run()
+    def set_scene(self, new_screen):
+        self.scene = new_screen
 
 
 if __name__ == "__main__":
-    main()
+    pygame.init()
+    Game().run()
