@@ -38,7 +38,6 @@ class Game:
     START_SCREEN = PlayScreen
 
     def __init__(self):
-        #self.rect = pygame.Rect(0, 0, Game.SIZE[0], Game.SIZE[1])
         self.scene = self.START_SCREEN(self)
         self.screen = None
 
@@ -57,6 +56,20 @@ class Game:
     def set_screen(self, new_screen):
         self.scene = new_screen(self)
 
+class Collider(pygame.sprite.Sprite):
+    def __init__(self, containers, health, hitbox, damage):
+        super().__init__(containers)
+        self.health = health
+        self.hitbox = hitbox
+        self.damage = damage
+
+    def get_hit(self, other):
+        self.health.take_damage(other.damage)
+
+    @staticmethod
+    def collide(c1, c2):
+        c1.get_hit(c2)
+        c2.get_hit(c1)
 
 class Player(pygame.sprite.Sprite):
     containers = None
@@ -64,7 +77,7 @@ class Player(pygame.sprite.Sprite):
 
     def __init__(self):
         super().__init__(self.containers)
-        self.image = pygame.image.load("player.png")
+        self.image = pygame.image.load("sprites/player.png")
         self.rect = self.image.get_rect()
 
     def update(self):
