@@ -1,15 +1,19 @@
+"""A library of many different Sprite subclasses to use"""
 
 import pygame
 
-from utils import *
+from utils import segment_intersects, WINDOW_SIZE
 
 
-def collide_mask(c1, c2):
-    return pygame.sprite.collide_mask(c1, c2) is not None
+def collide_mask(mask1, mask2):
+    """Checks if two masks collide"""
+    return pygame.sprite.collide_mask(mask1, mask2) is not None
 
 
 class VectorSprite(pygame.sprite.Sprite):
+    """A sprite that is centered and can be moved based on that center"""
     def __init__(self, containers, image, start):
+        """Creates the VectorSprite"""
         super().__init__(containers)
         self.image = None
         self.rect = None
@@ -17,36 +21,38 @@ class VectorSprite(pygame.sprite.Sprite):
         self.set_image(image)
 
     def set_image(self, image):
+        """Sets the image for the vector sprite"""
         self.image = image
         self.rect = self.image.get_rect()
         self.move_to(self.vec)
 
     def move_to(self, vec):
-        cx, cy = self.rect.center
-        self.rect.move_ip(int(vec[0]-cx), int(vec[1]-cy))
+        """Moves the sprite to a new location"""
+        cursor_x, cursor_y = self.rect.center
+        self.rect.move_ip(int(vec[0]-cursor_x), int(vec[1]-cursor_y))
         self.vec = vec
 
     def move_by(self, vec):
+        """Moves the sprite given a displacement vector"""
         self.move_to(vec+self.vec)
 
-    def point_inside_rect(self, pt):
-        horizontal = self.rect.left <= pt[0] <= self.rect.right
-        vertical = self.rect.top <= pt[1] <= self.rect.bottom
+    def point_inside_rect(self, point):
+        """Check if a particular point is inside the rectangle that bounds this sprite"""
+        horizontal = self.rect.left <= point[0] <= self.rect.right
+        vertical = self.rect.top <= point[1] <= self.rect.bottom
         return horizontal and vertical
 
     def is_on_screen(self):
+        """Checks if this sprite is on screen"""
         horizontal = segment_intersects(self.rect.left, self.rect.right, 0, WINDOW_SIZE[0])
         vertical = segment_intersects(self.rect.bottom, self.rect.top, 0, WINDOW_SIZE[1])
         return vertical and horizontal
 
 
-def image_from_text(text, font_size, color):
-    font = pygame.font.SysFont('mono', font_size)
-    return font.render(text, True, color)
-
-
 class TextSprite(VectorSprite):
+    """A sprite that contains text"""
     def __init__(self, containers, text, start, font_size=24, color=(255, 255, 255)):
+        """Creates the TextSprite"""
         super().__init__(
             containers=containers,
             image=pygame.Surface((1, 1)),
@@ -58,26 +64,34 @@ class TextSprite(VectorSprite):
         self.update_image()
 
     def update_image(self):
-        self.set_image(image_from_text(self.text, self.font_size, self.color))
+        """Updates the image used for this sprite"""
+        font = pygame.font.SysFont('mono', self.font_size)
+        img = font.render(self.text, True, self.color)
+        self.set_image(img)
 
     def set_text(self, text):
+        """Sets the text"""
         if text != self.text:
             self.text = text
             self.update_image()
 
     def set_color(self, color):
+        """Sets the color"""
         if color != self.color:
             self.color = color
             self.update_image()
 
     def set_font_size(self, font_size):
+        """Sets the font size"""
         if font_size != self.font_size:
             self.font_size = font_size
             self.update_image()
 
 
 class RectangleSprite(VectorSprite):
-    def __init__(self, containers, color, size, border_size, start):
+    """A sprite that displays a rectangle"""
+    def __init__(self, containers, color, size, border_size, start, fill=False):
+        """Creates the RectangleSprite"""
         super().__init__(
             containers=containers,
             image=pygame.Surface(size),
@@ -87,21 +101,26 @@ class RectangleSprite(VectorSprite):
         self.size = size
         self.border_size = border_size
         self.inner_size = self.size-2*self.border_size
+        self.fill = fill
 
     def update(self):
+        """Draws the image for the sprite"""
         self.image.fill(self.color)
-        self.image.fill((0, 0, 0), pygame.Rect(
-            self.border_size,
-            self.border_size,
-            self.inner_size[0],
-            self.inner_size[1]
-        ))
+        if not self.fill:
+            self.image.fill((0, 0, 0), pygame.Rect(
+                self.border_size,
+                self.border_size,
+                self.inner_size[0],
+                self.inner_size[1]
+            ))
 
 
 class Button(RectangleSprite):
+    """A button that can be pressed"""
     def __init__(self, containers, text, start, size, onclick=lambda: None,
                  font_size=24, color=(200, 200, 200),
                  hover_color=(255, 255, 255), border_size=2):
+        """Creates the button"""
         super().__init__(
             containers=containers,
             color=color,
@@ -116,20 +135,22 @@ class Button(RectangleSprite):
         self.being_pressed = False
 
     def set_color(self, color):
+        """Sets the button color"""
         self.color = color
         self.text.set_color(color)
 
     def update(self):
-        pressed = pygame.mouse.get_pressed(3)[0]
-        if self.point_inside_rect(pygame.mouse.get_pos()):
+        """Updates the button"""
+        pressed = pygame.mouse.get_pressed(3)[0]  # check if mouse button is clicked
+        if self.point_inside_rect(pygame.mouse.get_pos()):  # mouse is inside button
             self.set_color(self.hover_color)
             if pressed:
                 self.being_pressed = True
             else:
                 if self.being_pressed:
-                    self.onclick()
+                    self.onclick()  # register a click
                 self.being_pressed = False
-        else:
+        else:  # mouse is not inside button
             self.set_color(self.normal_color)
             self.being_pressed = False
 
@@ -137,24 +158,29 @@ class Button(RectangleSprite):
 
 
 class Collider(VectorSprite):
+    """A sprite that collides using a mesh with other sprites"""
     def __init__(self, containers, image, start, health, damage):
+        """Creates the Collider"""
         super().__init__(containers, image, start)
         self.health = health
         self.mask = pygame.mask.from_surface(self.image)
         self.damage = damage
 
     def get_hit(self, other):
+        """Gets hit by another Collider"""
         self.health.take_damage(other.damage)
         if self.health.dead():
             self.kill()
 
     @staticmethod
-    def collide(c1, c2):
-        c1.get_hit(c2)
-        c2.get_hit(c1)
+    def collide(collider1, collider2):
+        """Causes two Colliders to damage each other"""
+        collider1.get_hit(collider2)
+        collider2.get_hit(collider1)
 
     @staticmethod
-    def collide_all(c1, c2s):
-        sprite_list = pygame.sprite.spritecollide(c1, c2s, False, collide_mask)
-        for c2 in sprite_list:
-            Collider.collide(c1, c2)
+    def collide_all(collider1, collider2s):
+        """Checks for collisions between many colliders"""
+        sprite_list = pygame.sprite.spritecollide(collider1, collider2s, False, collide_mask)
+        for collider2 in sprite_list:
+            Collider.collide(collider1, collider2)

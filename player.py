@@ -1,11 +1,15 @@
+"""This module contains the player entity for the game"""
 
-from sprite_library import *
-from health import *
-from bullets import *
+import pygame
 import numpy as np
+
+from sprite_library import Collider
+from health import Health, HealthBar
+from bullets import LinearBullet
 
 
 class Player(Collider):
+    """The player entity for the game"""
     MOVE_SPEED = 20
     SHOOT_DELAY = 3
     BULLET_VELOCITY = np.array((0, -20))
@@ -16,6 +20,7 @@ class Player(Collider):
     bullet_image = pygame.image.load('sprites/player_bullet.png')
 
     def __init__(self, play_screen, start):
+        """Creates the Player"""
         super().__init__(
             containers=play_screen.get_containers('PLAYER', 'ENTITY'),
             image=self.sprite_image,
@@ -28,7 +33,7 @@ class Player(Collider):
             containers=play_screen.everything,
             health=self.health,
             size=np.array((160, 20)),
-            location=np.array((20, 600)),
+            start=np.array((100, 610)),
             border_size=2,
             color=(0, 255, 0)
         )
@@ -36,6 +41,7 @@ class Player(Collider):
         self.bullet_containers = play_screen.get_containers('PLAYER', 'BULLET')
 
     def update(self):
+        """Does various things to update the player"""
         # check if game started yet
         if not self.play_screen.game_started:
             return
