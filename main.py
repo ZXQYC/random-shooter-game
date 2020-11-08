@@ -3,6 +3,8 @@ import random
 import sys
 import pygame
 
+from health import *
+
 
 class Screen:
     def __init__(self, game):
@@ -17,7 +19,7 @@ class PlayScreen(Screen):
         super().__init__(game)
         self.everything = pygame.sprite.RenderUpdates()
         Player.containers = self.everything
-        Player()
+        self.player = Player()
         self.background = pygame.Surface(self.game.SIZE)
 
     def update(self, events):
@@ -56,29 +58,49 @@ class Game:
     def set_screen(self, new_screen):
         self.scene = new_screen(self)
 
+
+def collide_mask(c1, c2):
+    return pygame.sprite.collide_mask(c1, c2) is not None
+
+
 class Collider(pygame.sprite.Sprite):
-    def __init__(self, containers, health, hitbox, damage):
+    def __init__(self, containers, health, image, damage):
         super().__init__(containers)
         self.health = health
-        self.hitbox = hitbox
+        self.image = image
+        self.rect = self.image.get_rect()
+        self.mask = pygame.mask.from_surface(self.image)
         self.damage = damage
 
     def get_hit(self, other):
         self.health.take_damage(other.damage)
+        if self.health.dead():
+            self.kill()
 
     @staticmethod
     def collide(c1, c2):
         c1.get_hit(c2)
         c2.get_hit(c1)
 
-class Player(pygame.sprite.Sprite):
+    @staticmethod
+    def collide_all(c1, c2s):
+        slist = pygame.sprite.spritecollide(c1, c2s, False, collide_mask)
+        for c2 in slist:
+            Collider.collide(c1, c2)
+
+
+class Player(Collider):
     containers = None
     MOVE_SPEED = 20
+    sprite_image = pygame.image.load("sprites/player.png")
 
     def __init__(self):
-        super().__init__(self.containers)
-        self.image = pygame.image.load("sprites/player.png")
-        self.rect = self.image.get_rect()
+        super().__init__(
+            containers=self.containers,
+            health=Health(100),
+            image=self.sprite_image,
+            damage=10
+        )
 
     def update(self):
         nx, ny = pygame.mouse.get_pos()
