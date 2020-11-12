@@ -11,7 +11,7 @@ from player import Player
 from enemy import Enemy
 from utils import time_str
 
-from end_screen import EndScreen
+import end_screen
 
 
 class GameStartCircle(VectorSprite):
@@ -113,7 +113,7 @@ class PlayScreen(Screen):
 
         # transition to end screen if game ended
         if self.game_ended:
-            self.screen_transition(EndScreen(self.game, self.game_won, self.current_time()))
+            self.screen_transition(end_screen.EndScreen(self.game, self.game_won, self.current_time()))
 
         # if player is dead, get ready to screen transition next frame
         if self.player.health.dead():

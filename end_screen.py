@@ -8,6 +8,8 @@ from screen import Screen
 from sprite_library import TextSprite, Button
 from utils import time_str
 
+import play_screen
+
 
 class EndScreen(Screen):
     """A screen for displaying results after a game"""
@@ -45,5 +47,8 @@ class EndScreen(Screen):
             "CONTINUE",
             np.array((320, 400)),
             np.array((200, 100)),
-            sys.exit
+            self.to_play_screen
         )
+
+    def to_play_screen(self):
+        self.screen_transition(play_screen.PlayScreen(self.game))

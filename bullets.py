@@ -72,6 +72,6 @@ class BombBullet(LinearBullet):
     def update(self):
         """Explodes the bullet if necessary"""
         super().update()
-        boundaries = self.hitting_screen_boundary()
+        boundaries = self.center_off_screen()
         if np.linalg.norm(boundaries) > 0:
             self.explode()

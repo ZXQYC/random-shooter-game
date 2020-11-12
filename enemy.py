@@ -7,7 +7,7 @@ import pygame
 from sprite_library import Collider
 from health import Health, HealthBar
 from utils import INF, rot_matrix
-from bullets import LinearBullet, BouncingBullet
+from bullets import LinearBullet, BouncingBullet, BombBullet
 
 
 class AttackPattern:
@@ -61,7 +61,7 @@ class BlarghAttackPattern(AttackPattern):
                 containers=self.containers,
                 image=self.enemy.bullet_image_60px,
                 start=self.enemy.vec,
-                damage=40,
+                damage=50,
                 velocity=to_player*self.BULLET_SPEED
             )
         if self.frame % 2 == 0:
@@ -72,7 +72,7 @@ class BlarghAttackPattern(AttackPattern):
                 containers=self.containers,
                 image=self.enemy.bullet_image_30px,
                 start=self.enemy.vec,
-                damage=20,
+                damage=30,
                 velocity=to_player_rand * self.BULLET_SPEED
             )
 
@@ -85,7 +85,7 @@ class BounceAttackPattern(AttackPattern):
 
     def shoot(self):
         if self.frame < 60 and self.frame % 4 == 0:
-            down = np.array([0, -1])
+            down = np.array([0, 1])
             max_rot = np.pi
             rand_theta = random.random() * 2 * max_rot - max_rot
             direction_rand = rot_matrix(rand_theta) @ down
@@ -93,16 +93,56 @@ class BounceAttackPattern(AttackPattern):
                 containers=self.containers,
                 image=self.enemy.bullet_image_120px,
                 start=self.enemy.vec,
-                damage=80,
+                damage=70,
                 velocity=direction_rand * self.BULLET_SPEED,
                 max_bounce=self.total_frames-120
             )
 
 
-class Enemy(Collider):
-    sprite_image = pygame.image.load('sprites/enemy.png')
-    pattern_list = [BounceAttackPattern]
+class BombAttackPattern(AttackPattern):
+    BULLET_SPEED = 6
 
+    def __init__(self, enemy):
+        super().__init__(enemy, 300)
+
+    def bomb_explode(self, start):
+        """The function to be called when the bomb explodes"""
+        down = np.array([0, 1])
+        max_rot = np.pi
+        rand_theta = random.random() * 2 * max_rot - max_rot
+        num_bullets = 12
+        for i in range(num_bullets):
+            direction = rot_matrix(rand_theta+2*np.pi/num_bullets*i) @ down
+            LinearBullet(
+                containers=self.containers,
+                image=self.enemy.bullet_image_60px,
+                start=start + direction * 30,
+                damage=50,
+                velocity=direction * self.BULLET_SPEED
+            )
+
+    def shoot(self):
+        if self.frame < 120 and self.frame % 6 == 0:
+            down = np.array([0, 1])
+            max_rot = np.pi/6
+            rand_theta = random.random() * 2 * max_rot - max_rot
+            direction_rand = rot_matrix(rand_theta) @ down
+            BombBullet(
+                containers=self.containers,
+                image=self.enemy.bomb_image_120px,
+                start=self.enemy.vec,
+                damage=20,
+                velocity=direction_rand * self.BULLET_SPEED,
+                on_explode=self.bomb_explode
+            )
+
+
+class Enemy(Collider):
+    pattern_list = [BlarghAttackPattern, BounceAttackPattern, BombAttackPattern]
+
+    sprite_image = pygame.image.load('sprites/enemy.png')
+
+    bomb_image_120px = pygame.image.load('sprites/enemy_bomb_120px.png')
     bullet_image_120px = pygame.image.load('sprites/enemy_bullet_120px.png')
     bullet_image_60px = pygame.image.load('sprites/enemy_bullet_60px.png')
     bullet_image_30px = pygame.image.load('sprites/enemy_bullet_30px.png')
@@ -112,7 +152,7 @@ class Enemy(Collider):
             containers=play_screen.get_containers('ENEMY', 'ENTITY'),
             image=self.sprite_image,
             start=start,
-            health=Health(100),
+            health=Health(400),
             damage=10
         )
         self.play_screen = play_screen

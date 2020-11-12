@@ -15,8 +15,9 @@ class Screen:
         """Updates the screen given certain events"""
         self.everything.clear(self.game.screen, self.background)
         self.everything.update()
-        display = self.everything.draw(self.game.screen)
-        pygame.display.update(display)
+        if self == self.game.scene:
+            display = self.everything.draw(self.game.screen)
+            pygame.display.update(display)
 
     def screen_transition(self, new_screen):
         """Transition to a different screen"""
