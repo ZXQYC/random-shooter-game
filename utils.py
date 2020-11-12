@@ -2,6 +2,8 @@
 
 WINDOW_SIZE = (640, 640)
 
+INF = float('inf')
+
 
 def segment_intersects(pt1, pt2, xmin, xmax, threshold=1):
     """Checks whether or not the segment [pt1, pt2] intersects with [xmin, xmax]"""

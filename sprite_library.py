@@ -159,11 +159,14 @@ class Button(RectangleSprite):
 
 class Collider(VectorSprite):
     """A sprite that collides using a mesh with other sprites"""
-    def __init__(self, containers, image, start, health, damage):
+    def __init__(self, containers, image, start, health, damage, hitbox=None):
         """Creates the Collider"""
         super().__init__(containers, image, start)
         self.health = health
-        self.mask = pygame.mask.from_surface(self.image)
+        if hitbox is not None:
+            self.mask = pygame.mask.from_surface(hitbox)
+        else:
+            self.mask = pygame.mask.from_surface(self.image)
         self.damage = damage
 
     def get_hit(self, other):

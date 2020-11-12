@@ -14,9 +14,10 @@ class Player(Collider):
     SHOOT_DELAY = 3
     BULLET_VELOCITY = np.array((0, -20))
     BULLET_DAMAGE = 1
-    BULLET_SPAWN_LOC = np.array((0, -12))
+    BULLET_SPAWN_OFFSET = np.array((0, -12))
 
     sprite_image = pygame.image.load('sprites/player.png')
+    hitbox_image = pygame.image.load('sprites/player_hitbox.png')
     bullet_image = pygame.image.load('sprites/player_bullet.png')
 
     def __init__(self, play_screen, start):
@@ -26,7 +27,8 @@ class Player(Collider):
             image=self.sprite_image,
             start=start,
             health=Health(100, .1),
-            damage=10
+            damage=1,
+            hitbox=self.hitbox_image
         )
         self.play_screen = play_screen
         HealthBar(
@@ -61,7 +63,7 @@ class Player(Collider):
             LinearBullet(
                 containers=self.bullet_containers,
                 image=self.bullet_image,
-                start=self.vec + self.BULLET_SPAWN_LOC,
+                start=self.vec + self.BULLET_SPAWN_OFFSET,
                 damage=self.BULLET_DAMAGE,
                 velocity=self.BULLET_VELOCITY
             )
