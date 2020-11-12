@@ -54,11 +54,11 @@ class VectorSprite(pygame.sprite.Sprite):
         ans = np.array([0, 0])
         if self.rect.left < 0:
             ans[0] = -1
-        if self.rect.right > WINDOW_SIZE[0]:
+        if self.rect.right >= WINDOW_SIZE[0]:
             ans[0] = 1
         if self.rect.top < 0:
             ans[1] = -1
-        if self.rect.bottom > WINDOW_SIZE[1]:
+        if self.rect.bottom >= WINDOW_SIZE[1]:
             ans[1] = 1
         return ans
 
@@ -67,7 +67,7 @@ class VectorSprite(pygame.sprite.Sprite):
         for dimension in range(2):
             if self.vec[dimension] < 0:
                 ans[dimension] = -1
-            if self.vec[dimension] > WINDOW_SIZE[dimension]:
+            if self.vec[dimension] >= WINDOW_SIZE[dimension]:
                 ans[dimension] = 1
         return ans
 
