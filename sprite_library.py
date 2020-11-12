@@ -1,5 +1,6 @@
 """A library of many different Sprite subclasses to use"""
 
+import numpy as np
 import pygame
 
 from utils import segment_intersects, WINDOW_SIZE
@@ -47,6 +48,19 @@ class VectorSprite(pygame.sprite.Sprite):
         horizontal = segment_intersects(self.rect.left, self.rect.right, 0, WINDOW_SIZE[0])
         vertical = segment_intersects(self.rect.bottom, self.rect.top, 0, WINDOW_SIZE[1])
         return vertical and horizontal
+
+    def hitting_screen_boundary(self):
+        """Checks if this sprite is hitting the boundary of the screen"""
+        ans = np.array([0, 0])
+        if self.rect.left < 0:
+            ans[0] = -1
+        if self.rect.right > WINDOW_SIZE[0]:
+            ans[0] = 1
+        if self.rect.top < 0:
+            ans[1] = -1
+        if self.rect.bottom > WINDOW_SIZE[1]:
+            ans[1] = 1
+        return ans
 
 
 class TextSprite(VectorSprite):

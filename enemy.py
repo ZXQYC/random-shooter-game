@@ -7,7 +7,7 @@ import pygame
 from sprite_library import Collider
 from health import Health, HealthBar
 from utils import INF, rot_matrix
-from bullets import LinearBullet
+from bullets import LinearBullet, BouncingBullet
 
 
 class AttackPattern:
@@ -31,6 +31,9 @@ class AttackPattern:
     def shoot(self):
         pass
 
+    def frames_left(self):
+        return self.total_frames - self.frame
+
     def update(self):
         self.shoot()
         self.frame += 1
@@ -40,7 +43,7 @@ class AttackPattern:
 
 class NotAttackPattern(AttackPattern):
     def __init__(self, enemy):
-        super().__init__(enemy, INF)
+        super().__init__(enemy, 60)
 
 
 class BlarghAttackPattern(AttackPattern):
@@ -50,6 +53,8 @@ class BlarghAttackPattern(AttackPattern):
         super().__init__(enemy, 300)
 
     def shoot(self):
+        if self.frames_left() < 60:
+            return
         to_player = self.to_player_vector()
         if self.frame % 5 == 0:
             LinearBullet(
@@ -72,10 +77,33 @@ class BlarghAttackPattern(AttackPattern):
             )
 
 
+class BounceAttackPattern(AttackPattern):
+    BULLET_SPEED = 6
+
+    def __init__(self, enemy):
+        super().__init__(enemy, 300)
+
+    def shoot(self):
+        if self.frame < 60 and self.frame % 4 == 0:
+            down = np.array([0, -1])
+            max_rot = np.pi
+            rand_theta = random.random() * 2 * max_rot - max_rot
+            direction_rand = rot_matrix(rand_theta) @ down
+            BouncingBullet(
+                containers=self.containers,
+                image=self.enemy.bullet_image_120px,
+                start=self.enemy.vec,
+                damage=80,
+                velocity=direction_rand * self.BULLET_SPEED,
+                max_bounce=self.total_frames-120
+            )
+
+
 class Enemy(Collider):
     sprite_image = pygame.image.load('sprites/enemy.png')
-    pattern_list = [BlarghAttackPattern]
+    pattern_list = [BounceAttackPattern]
 
+    bullet_image_120px = pygame.image.load('sprites/enemy_bullet_120px.png')
     bullet_image_60px = pygame.image.load('sprites/enemy_bullet_60px.png')
     bullet_image_30px = pygame.image.load('sprites/enemy_bullet_30px.png')
 
@@ -97,11 +125,16 @@ class Enemy(Collider):
             color=(255, 0, 0)
         )
         self.attack_pattern = None
+        self.current_pattern = -1
         self.new_attack_pattern()
 
     def new_attack_pattern(self):
-        new_pattern = random.choice(self.pattern_list)
-        self.attack_pattern = new_pattern(self)
+        new_index = self.current_pattern
+        if len(self.pattern_list) > 1:
+            while new_index == self.current_pattern:
+                new_index = random.randrange(len(self.pattern_list))
+        self.current_pattern = new_index
+        self.attack_pattern = self.pattern_list[new_index](self)
 
     def update(self):
         # check if game started yet
