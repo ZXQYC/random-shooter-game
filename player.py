@@ -27,7 +27,7 @@ class Player(Collider):
             image=self.sprite_image,
             start=start,
             health=Health(100, .1),
-            damage=1,
+            damage=.1,
             hitbox=self.hitbox_image
         )
         self.play_screen = play_screen

@@ -56,7 +56,7 @@ class BlarghAttackPattern(AttackPattern):
         if self.frames_left() < 60:
             return
         to_player = self.to_player_vector()
-        if self.frame % 5 == 0:
+        if self.frame % 4 == 0:
             LinearBullet(
                 containers=self.containers,
                 image=self.enemy.bullet_image_60px,
@@ -65,14 +65,24 @@ class BlarghAttackPattern(AttackPattern):
                 velocity=to_player*self.BULLET_SPEED
             )
         if self.frame % 2 == 0:
-            max_rot = np.pi / 3
+            max_rot = np.pi / 2
             rand_theta = random.random() * 2 * max_rot - max_rot
             to_player_rand = rot_matrix(rand_theta) @ to_player
             LinearBullet(
                 containers=self.containers,
                 image=self.enemy.bullet_image_30px,
                 start=self.enemy.vec,
-                damage=30,
+                damage=40,
+                velocity=to_player_rand * self.BULLET_SPEED
+            )
+            max_rot = np.pi / 4
+            rand_theta = random.random() * 2 * max_rot - max_rot
+            to_player_rand = rot_matrix(rand_theta) @ to_player
+            LinearBullet(
+                containers=self.containers,
+                image=self.enemy.bullet_image_30px,
+                start=self.enemy.vec,
+                damage=40,
                 velocity=to_player_rand * self.BULLET_SPEED
             )
 
@@ -131,7 +141,7 @@ class BombAttackPattern(AttackPattern):
                 containers=self.containers,
                 image=self.enemy.bomb_image_120px,
                 start=self.enemy.vec,
-                damage=20,
+                damage=50,
                 velocity=direction_rand * self.BULLET_SPEED,
                 on_explode=self.bomb_explode
             )

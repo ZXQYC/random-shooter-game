@@ -59,7 +59,7 @@ class PlayScreen(Screen):
         self.start_text = TextSprite(
             self.everything,
             "Put your cursor in the circle to start the game!",
-            (320, 320),
+            (320, 330),
             16
         )
         self.time_text = TextSprite(
