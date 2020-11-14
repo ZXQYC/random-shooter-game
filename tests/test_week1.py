@@ -5,7 +5,7 @@ from utils import segment_intersects, time_str
 from health import Health, InfiniteHealth, OneHealth
 
 
-class TestGame(unittest.TestCase):
+class TestWeek1(unittest.TestCase):
     """Tests the game"""
     def test_segment_intersects(self):
         res = segment_intersects(1, 5, 4, 6)

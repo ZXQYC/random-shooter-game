@@ -1,6 +1,10 @@
 """Utility functions and constants for use elsewhere in the program"""
 
+import numpy as np
+
 WINDOW_SIZE = (640, 640)
+
+INF = float('inf')
 
 
 def segment_intersects(pt1, pt2, xmin, xmax, threshold=1):
@@ -15,3 +19,7 @@ def time_str(secs, ljust=5):
     left = "Time: "
     right = str(int(secs))
     return (left+right).ljust(len(left)+ljust)
+
+
+def rot_matrix(theta):
+    return np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])

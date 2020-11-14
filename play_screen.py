@@ -6,11 +6,12 @@ import numpy as np
 import pygame
 
 from screen import Screen
-from sprite_library import VectorSprite, TextSprite, RectangleSprite
+from sprite_library import VectorSprite, TextSprite, RectangleSprite, Collider
 from player import Player
+from enemy import Enemy
 from utils import time_str
 
-from end_screen import EndScreen
+import end_screen
 
 
 class GameStartCircle(VectorSprite):
@@ -34,6 +35,7 @@ class GameStartCircle(VectorSprite):
 class PlayScreen(Screen):
     """The screen for playing the game"""
     PLAYER_START = np.array((320, 400))
+    ENEMY_START = np.array((320, 160))
 
     def __init__(self, game):
         """Create the PlayScreen"""
@@ -41,6 +43,7 @@ class PlayScreen(Screen):
 
         self.game_started = False
         self.game_ended = False
+        self.game_won = False
         self.start_time = 0
 
         # create containers
@@ -56,7 +59,7 @@ class PlayScreen(Screen):
         self.start_text = TextSprite(
             self.everything,
             "Put your cursor in the circle to start the game!",
-            (320, 320),
+            (320, 330),
             16
         )
         self.time_text = TextSprite(
@@ -65,6 +68,7 @@ class PlayScreen(Screen):
             (570, 620),
             16
         )
+        self.enemy = Enemy(self, self.ENEMY_START)
 
     def start_game(self):
         """Starts the game (called when player hovers over the start circle)"""
@@ -84,6 +88,16 @@ class PlayScreen(Screen):
             self.containers[alignment][obj_type]
         )
 
+    def full_screen_rectangle(self, color):
+        RectangleSprite(
+            self.everything,
+            color,
+            np.array((650, 650)),
+            np.array((0, 0)),
+            np.array((320, 320)),
+            True
+        )
+
     def update(self):
         """Updates the game screen"""
         super().update()
@@ -92,18 +106,22 @@ class PlayScreen(Screen):
             self.start_text.kill()
             self.time_text.set_text(time_str(self.current_time()))
 
+        # do collision detection
+        Collider.collide_all(self.player, self.containers['ENEMY']['BULLET'])
+        Collider.collide_all(self.enemy, self.containers['PLAYER']['BULLET'])
+        Collider.collide_all(self.player, self.containers['ENEMY']['ENTITY'])
+
         # transition to end screen if game ended
         if self.game_ended:
-            self.screen_transition(EndScreen(self.game, False, self.current_time()))
+            self.screen_transition(end_screen.EndScreen(self.game, self.game_won, self.current_time()))
 
         # if player is dead, get ready to screen transition next frame
         if self.player.health.dead():
             self.game_ended = True
-            RectangleSprite(
-                self.everything,
-                (255, 0, 0),
-                np.array((650, 650)),
-                np.array((0, 0)),
-                np.array((320, 320)),
-                True
-            )
+            self.full_screen_rectangle((255, 0, 0))
+
+        # if enemy is dead, also get ready to transition
+        if self.enemy.health.dead():
+            self.game_ended = True
+            self.game_won = True
+            self.full_screen_rectangle((255, 255, 255))

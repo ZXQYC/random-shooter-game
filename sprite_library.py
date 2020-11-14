@@ -1,5 +1,6 @@
 """A library of many different Sprite subclasses to use"""
 
+import numpy as np
 import pygame
 
 from utils import segment_intersects, WINDOW_SIZE
@@ -47,6 +48,28 @@ class VectorSprite(pygame.sprite.Sprite):
         horizontal = segment_intersects(self.rect.left, self.rect.right, 0, WINDOW_SIZE[0])
         vertical = segment_intersects(self.rect.bottom, self.rect.top, 0, WINDOW_SIZE[1])
         return vertical and horizontal
+
+    def hitting_screen_boundary(self):
+        """Checks if this sprite is hitting the boundary of the screen"""
+        ans = np.array([0, 0])
+        if self.rect.left < 0:
+            ans[0] = -1
+        if self.rect.right >= WINDOW_SIZE[0]:
+            ans[0] = 1
+        if self.rect.top < 0:
+            ans[1] = -1
+        if self.rect.bottom >= WINDOW_SIZE[1]:
+            ans[1] = 1
+        return ans
+
+    def center_off_screen(self):
+        ans = np.array([0, 0])
+        for dimension in range(2):
+            if self.vec[dimension] < 0:
+                ans[dimension] = -1
+            if self.vec[dimension] >= WINDOW_SIZE[dimension]:
+                ans[dimension] = 1
+        return ans
 
 
 class TextSprite(VectorSprite):
@@ -159,11 +182,14 @@ class Button(RectangleSprite):
 
 class Collider(VectorSprite):
     """A sprite that collides using a mesh with other sprites"""
-    def __init__(self, containers, image, start, health, damage):
+    def __init__(self, containers, image, start, health, damage, hitbox=None):
         """Creates the Collider"""
         super().__init__(containers, image, start)
         self.health = health
-        self.mask = pygame.mask.from_surface(self.image)
+        if hitbox is not None:
+            self.mask = pygame.mask.from_surface(hitbox)
+        else:
+            self.mask = pygame.mask.from_surface(self.image)
         self.damage = damage
 
     def get_hit(self, other):

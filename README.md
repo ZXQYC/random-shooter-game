@@ -4,7 +4,7 @@
 
 This is a simple shooter game made in Python 3, made using PyGame.
 
-It is still very incomplete, as it is only the first week of the project.
+The game should now be fully playable. Remaining work to be done includes leaderboards, main menu, and difficulty selection. 
 
 ## How to run
 
