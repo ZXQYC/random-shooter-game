@@ -6,7 +6,7 @@ import pygame
 
 from sprite_library import Collider
 from health import Health, HealthBar
-from utils import INF, rot_matrix
+from utils import image_load, rot_matrix
 from bullets import LinearBullet, BouncingBullet, BombBullet
 
 
@@ -150,12 +150,12 @@ class BombAttackPattern(AttackPattern):
 class Enemy(Collider):
     pattern_list = [BlarghAttackPattern, BounceAttackPattern, BombAttackPattern]
 
-    sprite_image = pygame.image.load('sprites/enemy.png')
+    sprite_image = image_load('enemy.png')
 
-    bomb_image_120px = pygame.image.load('sprites/enemy_bomb_120px.png')
-    bullet_image_120px = pygame.image.load('sprites/enemy_bullet_120px.png')
-    bullet_image_60px = pygame.image.load('sprites/enemy_bullet_60px.png')
-    bullet_image_30px = pygame.image.load('sprites/enemy_bullet_30px.png')
+    bomb_image_120px = image_load('enemy_bomb_120px.png')
+    bullet_image_120px = image_load('enemy_bullet_120px.png')
+    bullet_image_60px = image_load('enemy_bullet_60px.png')
+    bullet_image_30px = image_load('enemy_bullet_30px.png')
 
     def __init__(self, play_screen, start):
         super().__init__(

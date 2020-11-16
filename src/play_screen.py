@@ -9,14 +9,14 @@ from screen import Screen
 from sprite_library import VectorSprite, TextSprite, RectangleSprite, Collider
 from player import Player
 from enemy import Enemy
-from utils import time_str
+from utils import time_str, image_load
 
 import end_screen
 
 
 class GameStartCircle(VectorSprite):
     """A circle used at the start of a game. Hover cursor inside to begin game."""
-    circle_image = pygame.image.load('sprites/game_start_circle.png')
+    circle_image = image_load('game_start_circle.png')
 
     def __init__(self, play_screen, start):
         """Create the circle"""

@@ -1,10 +1,21 @@
 """Utility functions and constants for use elsewhere in the program"""
 
 import numpy as np
+import pygame
 
 WINDOW_SIZE = (640, 640)
 
 INF = float('inf')
+
+SPRITE_DIR = ['../sprites/', './sprites/']
+
+
+def image_load(name):
+    for directory in SPRITE_DIR:
+        try:
+            return pygame.image.load(directory + name)
+        except FileNotFoundError:
+            pass
 
 
 def segment_intersects(pt1, pt2, xmin, xmax, threshold=1):
