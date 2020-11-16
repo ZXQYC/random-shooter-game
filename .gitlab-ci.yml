@@ -5,4 +5,5 @@ test:
   stage: test
   script:
     - pip install -r requirements.txt
+    - cd src
     - python -m unittest discover tests

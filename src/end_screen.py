@@ -1,7 +1,5 @@
 """The screen for display game results"""
 
-import sys
-
 import numpy as np
 
 from screen import Screen

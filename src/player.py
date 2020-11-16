@@ -6,6 +6,7 @@ import numpy as np
 from sprite_library import Collider
 from health import Health, HealthBar
 from bullets import LinearBullet
+from utils import image_load
 
 
 class Player(Collider):
@@ -16,9 +17,9 @@ class Player(Collider):
     BULLET_DAMAGE = 1
     BULLET_SPAWN_OFFSET = np.array((0, -12))
 
-    sprite_image = pygame.image.load('sprites/player.png')
-    hitbox_image = pygame.image.load('sprites/player_hitbox.png')
-    bullet_image = pygame.image.load('sprites/player_bullet.png')
+    sprite_image = image_load('player.png')
+    hitbox_image = image_load('player_hitbox.png')
+    bullet_image = image_load('player_bullet.png')
 
     def __init__(self, play_screen, start):
         """Creates the Player"""
