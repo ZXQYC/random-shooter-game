@@ -63,6 +63,7 @@ class VectorSprite(pygame.sprite.Sprite):
         return ans
 
     def center_off_screen(self):
+        """Checks if the center of the sprite is off screen"""
         ans = np.array([0, 0])
         for dimension in range(2):
             if self.vec[dimension] < 0:

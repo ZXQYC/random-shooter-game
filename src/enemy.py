@@ -1,8 +1,8 @@
+"""The enemy for the game"""
 
 import random
 
 import numpy as np
-import pygame
 
 from sprite_library import Collider
 from health import Health, HealthBar
@@ -11,7 +11,9 @@ from bullets import LinearBullet, BouncingBullet, BombBullet
 
 
 class AttackPattern:
+    """An attack pattern that the enemy can use"""
     def __init__(self, enemy, total_frames):
+        """Creates the attack pattern"""
         self.enemy = enemy
         self.play_screen = enemy.play_screen
         self.player = self.play_screen.player
@@ -21,6 +23,8 @@ class AttackPattern:
         self.done = False
 
     def to_player_vector(self, start=None):
+        """Creates a unit vector pointing from the given point to the player.
+        If no given point, use the enemy's current position"""
         if start is None:
             start = self.enemy.vec
         else:
@@ -29,12 +33,14 @@ class AttackPattern:
         return ans / np.linalg.norm(ans)
 
     def shoot(self):
-        pass
+        """A function to be implemented in subclasses. Called once per frame."""
 
     def frames_left(self):
+        """The number of frames left before the attack pattern ends"""
         return self.total_frames - self.frame
 
     def update(self):
+        """Updates the attack pattern for a new frame"""
         self.shoot()
         self.frame += 1
         if self.frame >= self.total_frames:
@@ -42,20 +48,27 @@ class AttackPattern:
 
 
 class NotAttackPattern(AttackPattern):
+    """A fake attack pattern that doesn't do anything. Lasts 60 frames. """
     def __init__(self, enemy):
+        """Creates the fake attack pattern"""
         super().__init__(enemy, 60)
 
 
 class BlarghAttackPattern(AttackPattern):
+    """An attack pattern that vomits bullets towards the player"""
     BULLET_SPEED = 8
 
     def __init__(self, enemy):
+        """Creates the blargh attack pattern"""
         super().__init__(enemy, 300)
 
     def shoot(self):
+        """Shoots bullets at the player"""
+        # do nothing if there is less than 60 frames left
         if self.frames_left() < 60:
             return
         to_player = self.to_player_vector()
+        # Shoot a 60px bullet at the player every 4 frames
         if self.frame % 4 == 0:
             LinearBullet(
                 containers=self.containers,
@@ -64,6 +77,7 @@ class BlarghAttackPattern(AttackPattern):
                 damage=50,
                 velocity=to_player*self.BULLET_SPEED
             )
+        # Shoot two 30px bullets near the player every 2 frames
         if self.frame % 2 == 0:
             max_rot = np.pi / 2
             rand_theta = random.random() * 2 * max_rot - max_rot
@@ -88,13 +102,17 @@ class BlarghAttackPattern(AttackPattern):
 
 
 class BounceAttackPattern(AttackPattern):
+    """An attack pattern that shoots big bouncing bullets everywhere"""
     BULLET_SPEED = 6
 
     def __init__(self, enemy):
+        """Creates the BounceAttackPattern"""
         super().__init__(enemy, 300)
 
     def shoot(self):
+        """Shoots the bouncy bullets"""
         if self.frame < 60 and self.frame % 4 == 0:
+            # Should shoot 15 bouncy bullets in 1 second, then stop doing anything
             down = np.array([0, 1])
             max_rot = np.pi
             rand_theta = random.random() * 2 * max_rot - max_rot
@@ -110,9 +128,11 @@ class BounceAttackPattern(AttackPattern):
 
 
 class BombAttackPattern(AttackPattern):
+    """An attack pattern that throws bombs towards the bottom of the screen"""
     BULLET_SPEED = 6
 
     def __init__(self, enemy):
+        """Creates the BombAttackPattern"""
         super().__init__(enemy, 300)
 
     def bomb_explode(self, start):
@@ -132,7 +152,9 @@ class BombAttackPattern(AttackPattern):
             )
 
     def shoot(self):
+        """Shoots bombs towards the bottom of the screen"""
         if self.frame < 120 and self.frame % 6 == 0:
+            # should fire 20 bombs in 2 seconds, then do nothing
             down = np.array([0, 1])
             max_rot = np.pi/6
             rand_theta = random.random() * 2 * max_rot - max_rot
@@ -148,6 +170,7 @@ class BombAttackPattern(AttackPattern):
 
 
 class Enemy(Collider):
+    """The big bad evil guy"""
     pattern_list = [BlarghAttackPattern, BounceAttackPattern, BombAttackPattern]
 
     sprite_image = image_load('enemy.png')
@@ -158,6 +181,7 @@ class Enemy(Collider):
     bullet_image_30px = image_load('enemy_bullet_30px.png')
 
     def __init__(self, play_screen, start):
+        """Creates the enemy"""
         super().__init__(
             containers=play_screen.get_containers('ENEMY', 'ENTITY'),
             image=self.sprite_image,
@@ -179,6 +203,7 @@ class Enemy(Collider):
         self.new_attack_pattern()
 
     def new_attack_pattern(self):
+        """Switches to a new attack pattern"""
         new_index = self.current_pattern
         if len(self.pattern_list) > 1:
             while new_index == self.current_pattern:
@@ -187,6 +212,7 @@ class Enemy(Collider):
         self.attack_pattern = self.pattern_list[new_index](self)
 
     def update(self):
+        """Updates the enemy"""
         # check if game started yet
         if not self.play_screen.game_started:
             return

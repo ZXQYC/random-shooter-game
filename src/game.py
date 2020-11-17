@@ -36,8 +36,3 @@ class Game:
     def set_scene(self, new_screen):
         """Changes the scene the game is in"""
         self.scene = new_screen
-
-
-if __name__ == "__main__":
-    pygame.init()
-    Game().run()
