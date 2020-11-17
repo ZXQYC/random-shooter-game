@@ -49,4 +49,5 @@ class EndScreen(Screen):
         )
 
     def to_play_screen(self):
+        """Goes to the play screen"""
         self.screen_transition(play_screen.PlayScreen(self.game))

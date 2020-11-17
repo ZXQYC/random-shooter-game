@@ -11,6 +11,7 @@ SPRITE_DIR = ['../sprites/', './sprites/']
 
 
 def image_load(name):
+    """Loads an image"""
     for directory in SPRITE_DIR:
         try:
             return pygame.image.load(directory + name)
@@ -33,4 +34,5 @@ def time_str(secs, ljust=5):
 
 
 def rot_matrix(theta):
+    """Creates the rotation matrix for a given rotation angle"""
     return np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])

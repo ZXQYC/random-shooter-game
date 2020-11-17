@@ -89,6 +89,7 @@ class PlayScreen(Screen):
         )
 
     def full_screen_rectangle(self, color):
+        """Creates a full screen rectangle of a particular color"""
         RectangleSprite(
             self.everything,
             color,
@@ -113,7 +114,11 @@ class PlayScreen(Screen):
 
         # transition to end screen if game ended
         if self.game_ended:
-            self.screen_transition(end_screen.EndScreen(self.game, self.game_won, self.current_time()))
+            self.screen_transition(end_screen.EndScreen(
+                self.game,
+                self.game_won,
+                self.current_time()
+            ))
 
         # if player is dead, get ready to screen transition next frame
         if self.player.health.dead():
