@@ -42,6 +42,7 @@ def rot_matrix(theta):
 
 
 class Difficulty:
+    """An enum for representing difficulty"""
     TRIVIAL = 'TRIVIAL'
     NORMAL = 'NORMAL'
     HARD = 'HARD'

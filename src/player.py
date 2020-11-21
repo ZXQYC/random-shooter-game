@@ -23,12 +23,14 @@ class Player(Collider):
 
     @staticmethod
     def health_from_difficulty(diff):
+        """Creates the player's health, given the difficulty"""
         if diff == Difficulty.TRIVIAL:
             return InfiniteHealth()
         if diff == Difficulty.NORMAL:
             return Health(100, .1)
         if diff == Difficulty.HARD:
             return OneHealth()
+        return None
 
     def __init__(self, play_screen, start, diff=Difficulty.NORMAL):
         """Creates the Player"""

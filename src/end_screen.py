@@ -55,6 +55,8 @@ class EndScreen(Screen):
         )
 
     def next_screen(self):
+        """Go to the next screen, depending on what happened in the game"""
+        # if the game was won and the time is a high score, go to name input
         if self.game_won and self.game.leaderboard.is_high_score(self.diff, self.time_taken):
             self.screen_transition(
                 name_input_screen.NameInputScreen(
@@ -63,6 +65,7 @@ class EndScreen(Screen):
                     self.time_taken
                 )
             )
+        # otherwise, go back to main menu
         else:
             self.screen_transition(
                 main_screen.MainScreen(self.game)
