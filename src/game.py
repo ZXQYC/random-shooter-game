@@ -4,20 +4,21 @@ import sys
 
 import pygame
 
-from play_screen import PlayScreen
+from screens.main_screen import MainScreen
 from utils import WINDOW_SIZE
+from leaderboard import Leaderboard
 
 
 class Game:
     """Controls the main game loop"""
     FPS = 30
     SIZE = WINDOW_SIZE
-    START_SCREEN = PlayScreen
 
     def __init__(self):
         """Creates the Game object"""
-        self.scene = self.START_SCREEN(self)
+        self.scene = MainScreen(self)
         self.screen = None
+        self.leaderboard = Leaderboard()
 
     def run(self):
         """Runs the game"""
@@ -30,7 +31,7 @@ class Game:
                 if event.type == pygame.QUIT:
                     sys.exit()
             # update window and use clock tick
-            self.scene.update()
+            self.scene.update(events)
             clock.tick(self.FPS)
 
     def set_scene(self, new_screen):

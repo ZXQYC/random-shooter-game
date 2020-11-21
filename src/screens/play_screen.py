@@ -5,13 +5,13 @@ import time
 import numpy as np
 import pygame
 
-from screen import Screen
-from sprite_library import VectorSprite, TextSprite, RectangleSprite, Collider
-from player import Player
-from enemy import Enemy
-from utils import time_str, image_load
+from screens.screen import Screen
+from sprite.sprite_library import VectorSprite, TextSprite, RectangleSprite, Collider
+from sprite.player import Player
+from sprite.enemy import Enemy
+from utils import time_str, image_load, Difficulty
 
-import end_screen
+from screens import end_screen
 
 
 class GameStartCircle(VectorSprite):
@@ -37,14 +37,14 @@ class PlayScreen(Screen):
     PLAYER_START = np.array((320, 400))
     ENEMY_START = np.array((320, 160))
 
-    def __init__(self, game):
+    def __init__(self, game, diff=Difficulty.NORMAL):
         """Create the PlayScreen"""
         super().__init__(game)
-
         self.game_started = False
         self.game_ended = False
         self.game_won = False
         self.start_time = 0
+        self.diff = diff
 
         # create containers
         self.containers = {}
@@ -55,7 +55,7 @@ class PlayScreen(Screen):
 
         # create objects
         self.start_circle = GameStartCircle(self, self.PLAYER_START)
-        self.player = Player(self, self.PLAYER_START)
+        self.player = Player(self, self.PLAYER_START, diff)
         self.start_text = TextSprite(
             self.everything,
             "Put your cursor in the circle to start the game!",
@@ -99,9 +99,9 @@ class PlayScreen(Screen):
             True
         )
 
-    def update(self):
+    def update(self, events):
         """Updates the game screen"""
-        super().update()
+        super().update(events)
         # kill the start text if it already exists
         if self.game_started:
             self.start_text.kill()
@@ -117,7 +117,8 @@ class PlayScreen(Screen):
             self.screen_transition(end_screen.EndScreen(
                 self.game,
                 self.game_won,
-                self.current_time()
+                self.current_time(),
+                self.diff
             ))
 
         # if player is dead, get ready to screen transition next frame

@@ -9,6 +9,9 @@ INF = float('inf')
 
 SPRITE_DIR = ['../sprites/', './sprites/']
 
+NAME_LEN = 16
+
+MAX_LEADERS = 5
 
 def image_load(name):
     """Loads an image"""
@@ -36,3 +39,13 @@ def time_str(secs, ljust=5):
 def rot_matrix(theta):
     """Creates the rotation matrix for a given rotation angle"""
     return np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
+
+
+class Difficulty:
+    """An enum for representing difficulty"""
+    TRIVIAL = 'TRIVIAL'
+    NORMAL = 'NORMAL'
+    HARD = 'HARD'
+
+
+difficulties = [Difficulty.TRIVIAL, Difficulty.NORMAL, Difficulty.HARD]

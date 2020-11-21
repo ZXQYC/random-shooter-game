@@ -3,10 +3,10 @@
 import pygame
 import numpy as np
 
-from sprite_library import Collider
-from health import Health, HealthBar
-from bullets import LinearBullet
-from utils import image_load
+from sprite.sprite_library import Collider
+from sprite.health import Health, InfiniteHealth, OneHealth, HealthBar
+from sprite.bullets import LinearBullet
+from utils import image_load, Difficulty
 
 
 class Player(Collider):
@@ -21,16 +21,28 @@ class Player(Collider):
     hitbox_image = image_load('player_hitbox.png')
     bullet_image = image_load('player_bullet.png')
 
-    def __init__(self, play_screen, start):
+    @staticmethod
+    def health_from_difficulty(diff):
+        """Creates the player's health, given the difficulty"""
+        if diff == Difficulty.TRIVIAL:
+            return InfiniteHealth()
+        if diff == Difficulty.NORMAL:
+            return Health(100, .1)
+        if diff == Difficulty.HARD:
+            return OneHealth()
+        return None
+
+    def __init__(self, play_screen, start, diff=Difficulty.NORMAL):
         """Creates the Player"""
         super().__init__(
             containers=play_screen.get_containers('PLAYER', 'ENTITY'),
             image=self.sprite_image,
             start=start,
-            health=Health(100, .1),
+            health=self.health_from_difficulty(diff),
             damage=.1,
             hitbox=self.hitbox_image
         )
+        self.difficulty = diff
         self.play_screen = play_screen
         HealthBar(
             containers=play_screen.everything,

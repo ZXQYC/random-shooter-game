@@ -2,7 +2,7 @@
 
 import pygame
 
-from sprite_library import RectangleSprite
+from sprite.sprite_library import RectangleSprite
 
 
 class Health:
