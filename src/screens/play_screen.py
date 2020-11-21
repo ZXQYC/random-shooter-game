@@ -5,13 +5,13 @@ import time
 import numpy as np
 import pygame
 
-from screen import Screen
-from sprite_library import VectorSprite, TextSprite, RectangleSprite, Collider
-from player import Player
-from enemy import Enemy
+from screens.screen import Screen
+from sprite.sprite_library import VectorSprite, TextSprite, RectangleSprite, Collider
+from sprite.player import Player
+from sprite.enemy import Enemy
 from utils import time_str, image_load, Difficulty
 
-import end_screen
+from screens import end_screen
 
 
 class GameStartCircle(VectorSprite):

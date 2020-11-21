@@ -4,7 +4,7 @@ import sys
 
 import pygame
 
-from main_screen import MainScreen
+from screens.main_screen import MainScreen
 from utils import WINDOW_SIZE
 from leaderboard import Leaderboard
 

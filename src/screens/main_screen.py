@@ -2,12 +2,11 @@
 
 import numpy as np
 
-from sprite_library import TextSprite, Button
-from screen import Screen
+from sprite.sprite_library import TextSprite, Button
+from screens.screen import Screen
 from utils import difficulties
 
-import play_screen
-import high_score_screen
+from screens import high_score_screen, play_screen
 
 
 class MainScreen(Screen):

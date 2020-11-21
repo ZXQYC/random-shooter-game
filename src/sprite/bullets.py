@@ -2,8 +2,8 @@
 
 import numpy as np
 
-from sprite_library import Collider
-from health import OneHealth
+from sprite.sprite_library import Collider
+from sprite.health import OneHealth
 
 
 class Bullet(Collider):

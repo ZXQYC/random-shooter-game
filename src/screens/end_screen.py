@@ -2,12 +2,11 @@
 
 import numpy as np
 
-from screen import Screen
-from sprite_library import TextSprite, Button
+from screens.screen import Screen
+from sprite.sprite_library import TextSprite, Button
 from utils import time_str
 
-import main_screen
-import name_input_screen
+from screens import name_input_screen, main_screen
 
 
 class EndScreen(Screen):

@@ -4,8 +4,8 @@ import numpy as np
 import pygame
 
 from utils import rot_matrix, INF
-from sprite_library import VectorSprite
-from bullets import BouncingBullet, BombBullet
+from sprite.sprite_library import VectorSprite
+from sprite.bullets import BouncingBullet, BombBullet
 
 
 class TestWeek2(unittest.TestCase):

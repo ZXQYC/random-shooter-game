@@ -5,10 +5,10 @@ import random
 import numpy as np
 import pygame
 
-from sprite_library import Collider
-from health import Health, HealthBar
+from sprite.sprite_library import Collider
+from sprite.health import Health, HealthBar
 from utils import image_load, rot_matrix
-from bullets import LinearBullet, BouncingBullet, BombBullet
+from sprite.bullets import LinearBullet, BouncingBullet, BombBullet
 
 
 class AttackPattern:

@@ -3,9 +3,9 @@
 import pygame
 import numpy as np
 
-from sprite_library import Collider
-from health import Health, InfiniteHealth, OneHealth, HealthBar
-from bullets import LinearBullet
+from sprite.sprite_library import Collider
+from sprite.health import Health, InfiniteHealth, OneHealth, HealthBar
+from sprite.bullets import LinearBullet
 from utils import image_load, Difficulty
 
 

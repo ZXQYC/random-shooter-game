@@ -2,11 +2,11 @@
 
 import numpy as np
 
-from screen import Screen
-from sprite_library import TextSprite, Button
+from screens.screen import Screen
+from sprite.sprite_library import TextSprite, Button
 from utils import NAME_LEN, MAX_LEADERS
 
-import main_screen
+from screens import main_screen
 
 
 def format_line(place, name, time):

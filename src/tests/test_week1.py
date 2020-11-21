@@ -2,7 +2,7 @@
 
 import unittest
 from utils import segment_intersects, time_str
-from health import Health, InfiniteHealth, OneHealth
+from sprite.health import Health, InfiniteHealth, OneHealth
 
 
 class TestWeek1(unittest.TestCase):
