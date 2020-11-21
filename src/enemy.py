@@ -3,6 +3,7 @@
 import random
 
 import numpy as np
+import pygame
 
 from sprite_library import Collider
 from health import Health, HealthBar
@@ -216,7 +217,13 @@ class Enemy(Collider):
         # check if game started yet
         if not self.play_screen.game_started:
             return
+
         # update attack pattern
         if self.attack_pattern.done:
             self.new_attack_pattern()
         self.attack_pattern.update()
+
+        # check for keypress to cheat and win
+        pressed = pygame.key.get_pressed()
+        if pressed[ord('y')]:
+            self.health.die()

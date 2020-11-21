@@ -7,6 +7,7 @@ from sprite_library import TextSprite, Button
 from utils import time_str
 
 import main_screen
+import name_input_screen
 
 
 class EndScreen(Screen):
@@ -14,9 +15,14 @@ class EndScreen(Screen):
     LOSE_WIN_SIZE = 48
     LOSE_WIN_LOC = np.array((320, 180))
 
-    def __init__(self, game, game_won, time_taken):
+    def __init__(self, game, game_won, time_taken, diff):
         """Creates the EndScreen"""
         super().__init__(game)
+
+        self.game_won = game_won
+        self.time_taken = time_taken
+        self.diff = diff
+
         # display either YOU WIN or YOU LOSE
         if game_won:
             TextSprite(
@@ -45,5 +51,19 @@ class EndScreen(Screen):
             "CONTINUE",
             np.array((320, 400)),
             np.array((200, 100)),
-            lambda: self.screen_transition(main_screen.MainScreen(self.game))
+            self.next_screen
         )
+
+    def next_screen(self):
+        if self.game_won and self.game.leaderboard.is_high_score(self.diff, self.time_taken):
+            self.screen_transition(
+                name_input_screen.NameInputScreen(
+                    self.game,
+                    self.diff,
+                    self.time_taken
+                )
+            )
+        else:
+            self.screen_transition(
+                main_screen.MainScreen(self.game)
+            )

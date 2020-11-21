@@ -31,7 +31,7 @@ class Game:
                 if event.type == pygame.QUIT:
                     sys.exit()
             # update window and use clock tick
-            self.scene.update()
+            self.scene.update(events)
             clock.tick(self.FPS)
 
     def set_scene(self, new_screen):

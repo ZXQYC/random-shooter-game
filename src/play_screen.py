@@ -44,7 +44,7 @@ class PlayScreen(Screen):
         self.game_ended = False
         self.game_won = False
         self.start_time = 0
-        self.difficulty = diff
+        self.diff = diff
 
         # create containers
         self.containers = {}
@@ -99,9 +99,9 @@ class PlayScreen(Screen):
             True
         )
 
-    def update(self):
+    def update(self, events):
         """Updates the game screen"""
-        super().update()
+        super().update(events)
         # kill the start text if it already exists
         if self.game_started:
             self.start_text.kill()
@@ -117,7 +117,8 @@ class PlayScreen(Screen):
             self.screen_transition(end_screen.EndScreen(
                 self.game,
                 self.game_won,
-                self.current_time()
+                self.current_time(),
+                self.diff
             ))
 
         # if player is dead, get ready to screen transition next frame
