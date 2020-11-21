@@ -6,7 +6,7 @@ from screen import Screen
 from sprite_library import TextSprite, Button
 from utils import time_str
 
-import play_screen
+import main_screen
 
 
 class EndScreen(Screen):
@@ -45,9 +45,9 @@ class EndScreen(Screen):
             "CONTINUE",
             np.array((320, 400)),
             np.array((200, 100)),
-            self.to_play_screen
+            self.to_main_screen
         )
 
-    def to_play_screen(self):
-        """Goes to the play screen"""
-        self.screen_transition(play_screen.PlayScreen(self.game))
+    def to_main_screen(self):
+        """Goes to the main screen"""
+        self.screen_transition(main_screen.MainScreen(self.game))

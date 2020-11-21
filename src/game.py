@@ -4,7 +4,7 @@ import sys
 
 import pygame
 
-from play_screen import PlayScreen
+from main_screen import MainScreen
 from utils import WINDOW_SIZE
 
 
@@ -12,11 +12,10 @@ class Game:
     """Controls the main game loop"""
     FPS = 30
     SIZE = WINDOW_SIZE
-    START_SCREEN = PlayScreen
 
     def __init__(self):
         """Creates the Game object"""
-        self.scene = self.START_SCREEN(self)
+        self.scene = MainScreen(self)
         self.screen = None
 
     def run(self):

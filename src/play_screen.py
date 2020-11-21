@@ -9,7 +9,7 @@ from screen import Screen
 from sprite_library import VectorSprite, TextSprite, RectangleSprite, Collider
 from player import Player
 from enemy import Enemy
-from utils import time_str, image_load
+from utils import time_str, image_load, Difficulty
 
 import end_screen
 
@@ -37,14 +37,14 @@ class PlayScreen(Screen):
     PLAYER_START = np.array((320, 400))
     ENEMY_START = np.array((320, 160))
 
-    def __init__(self, game):
+    def __init__(self, game, diff=Difficulty.NORMAL):
         """Create the PlayScreen"""
         super().__init__(game)
-
         self.game_started = False
         self.game_ended = False
         self.game_won = False
         self.start_time = 0
+        self.difficulty = diff
 
         # create containers
         self.containers = {}
@@ -55,7 +55,7 @@ class PlayScreen(Screen):
 
         # create objects
         self.start_circle = GameStartCircle(self, self.PLAYER_START)
-        self.player = Player(self, self.PLAYER_START)
+        self.player = Player(self, self.PLAYER_START, diff)
         self.start_text = TextSprite(
             self.everything,
             "Put your cursor in the circle to start the game!",

@@ -142,7 +142,7 @@ class RectangleSprite(VectorSprite):
 class Button(RectangleSprite):
     """A button that can be pressed"""
     def __init__(self, containers, text, start, size, onclick=lambda: None,
-                 font_size=24, color=(200, 200, 200),
+                 font_size=24, color=(160, 160, 160),
                  hover_color=(255, 255, 255), border_size=2):
         """Creates the button"""
         super().__init__(
