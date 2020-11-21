@@ -22,16 +22,19 @@ class Leaderboard:
         self.database = None
         if self.valid:
             try:
-                self.client = pymongo.MongoClient(key)
+                self.client = pymongo.MongoClient(key % db_name)
                 self.database = self.client[db_name]
             except pymongo.errors.ConfigurationError:
                 self.valid = False
 
     def get_top(self, difficulty):
-        return self.database[difficulty].find().sort('time', -1).limit(self.TOP)
+        return list(self.database[difficulty].find().sort('time').limit(self.TOP))
 
     def is_high_score(self, difficulty, time):
-        return self.get_top(difficulty)[self.TOP-1]['time'] > time
+        tops = self.get_top(difficulty)
+        if len(tops) < self.TOP:
+            return True
+        return time < tops[self.TOP-1]['time']
 
     def add_score(self, difficulty, time, name):
         self.database[difficulty].insert_one({'time': time, 'name': name})
