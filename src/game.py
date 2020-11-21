@@ -6,6 +6,7 @@ import pygame
 
 from main_screen import MainScreen
 from utils import WINDOW_SIZE
+from leaderboard import Leaderboard
 
 
 class Game:
@@ -17,6 +18,7 @@ class Game:
         """Creates the Game object"""
         self.scene = MainScreen(self)
         self.screen = None
+        self.leaderboard = Leaderboard()
 
     def run(self):
         """Runs the game"""

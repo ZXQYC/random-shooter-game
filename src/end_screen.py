@@ -45,9 +45,5 @@ class EndScreen(Screen):
             "CONTINUE",
             np.array((320, 400)),
             np.array((200, 100)),
-            self.to_main_screen
+            lambda: self.screen_transition(main_screen.MainScreen(self.game))
         )
-
-    def to_main_screen(self):
-        """Goes to the main screen"""
-        self.screen_transition(main_screen.MainScreen(self.game))

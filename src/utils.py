@@ -9,6 +9,9 @@ INF = float('inf')
 
 SPRITE_DIR = ['../sprites/', './sprites/']
 
+NAME_LEN = 16
+
+MAX_LEADERS = 5
 
 def image_load(name):
     """Loads an image"""

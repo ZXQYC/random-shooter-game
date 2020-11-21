@@ -5,14 +5,13 @@ import pymongo
 import pymongo.errors
 import dotenv
 
-from utils import difficulties
+from utils import difficulties, MAX_LEADERS
 
 dotenv.load_dotenv()
 
 
 class Leaderboard:
     """A class that connects to the database and can make changes"""
-    TOP = 5
 
     def __init__(self, db_name='leaderboard'):
         """Creates a database handler"""
@@ -28,13 +27,13 @@ class Leaderboard:
                 self.valid = False
 
     def get_top(self, difficulty):
-        return list(self.database[difficulty].find().sort('time').limit(self.TOP))
+        return list(self.database[difficulty].find().sort('time').limit(MAX_LEADERS))
 
     def is_high_score(self, difficulty, time):
         tops = self.get_top(difficulty)
-        if len(tops) < self.TOP:
+        if len(tops) < MAX_LEADERS:
             return True
-        return time < tops[self.TOP-1]['time']
+        return time < tops[MAX_LEADERS-1]['time']
 
     def add_score(self, difficulty, time, name):
         self.database[difficulty].insert_one({'time': time, 'name': name})
