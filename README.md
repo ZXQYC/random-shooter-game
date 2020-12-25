@@ -29,9 +29,3 @@ with the database name replaced with %s. For example:
 Finally, run this command to play the game:
 
     python src
-
-### Unit Tests
-
-If you want to run unit tests, go to the src folder using `cd src`, then run this command:
-
-    python -m unittest discover tests
